@@ -1,10 +1,15 @@
-from urllib.parse import urlparse
-
 from django import forms
-from django.conf import settings
 
 from .models import Link
 from .url_checks import check_url, normalize_url
+
+
+SORT_COLUMNS = [
+    ('short_code', 'Короткая ссылка'),
+    ('original_link', 'Исходная ссылка'),
+    ('created_at', 'Создана'),
+]
+DEFAULT_SORT = '-created_at'
 
 
 class LinkForm(forms.ModelForm):
@@ -22,3 +27,21 @@ class LinkForm(forms.ModelForm):
         url = normalize_url(self.cleaned_data['original_link'])
         check_url(url)
         return url
+
+
+class LinkSearchForm(forms.Form):
+    q = forms.CharField(
+        required=False,
+        max_length=200,
+        widget=forms.TextInput(attrs={
+            'type': 'search',
+            'class': 'form-control',
+            'placeholder': 'Поиск по ссылке или коду',
+            'aria-label': 'Поиск',
+        }),
+    )
+    sort = forms.ChoiceField(
+        required=False,
+        choices=[(prefix + field, '') for field, _ in SORT_COLUMNS for prefix in ('', '-')],
+        widget=forms.HiddenInput,
+    )

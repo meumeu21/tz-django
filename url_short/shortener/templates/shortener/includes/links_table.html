@@ -1,0 +1,29 @@
+<table class="table table-hover align-middle links-table">
+  <thead>
+    <tr>
+    {% for column in columns %}
+      <th scope="col"
+        {% if column.direction == 'asc' %}aria-sort="ascending"{% elif column.direction == 'desc' %}aria-sort="descending"{% endif %}>
+      <a href="{{ column.url }}" class="link-body-emphasis text-decoration-none">
+        {{ column.label }}
+        {% if column.direction == 'asc' %}▲{% elif column.direction == 'desc' %}▼{% else %}<span class="text-body-tertiary">↕</span>{% endif %}
+      </a>
+      </th>
+    {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for link in page_obj %}
+      <tr>
+        <td class="text-nowrap">
+          <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
+        </td>
+        <td class="cell-truncate">
+          <a href="{{ link.original_link }}" target="_blank" rel="noopener noreferrer"
+              class="link-secondary d-block text-truncate" title="{{ link.original_link }}">{{ link.original_link }}</a>
+        </td>
+        <td class="text-nowrap text-body-secondary">{{ link.created_at|date:"d.m.Y H:i" }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

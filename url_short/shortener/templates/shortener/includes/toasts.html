@@ -1,0 +1,14 @@
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  {% for message in messages %}
+    <div class="toast align-items-center text-bg-{{ message.level_tag }} border-0"
+         role="{% if message.level_tag == 'danger' %}alert{% else %}status{% endif %}"
+         aria-live="{% if message.level_tag == 'danger' %}assertive{% else %}polite{% endif %}"
+         aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">{{ message }}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast" aria-label="Закрыть"></button>
+      </div>
+    </div>
+  {% endfor %}
+</div>

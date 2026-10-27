@@ -2,10 +2,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.db.models import Q
 
 from http import HTTPStatus
 
-from .forms import LinkForm
+from .forms import DEFAULT_SORT, SORT_COLUMNS, LinkForm, LinkSearchForm
 from .models import Link
 from .ratelimit import is_rate_limited
 
@@ -66,7 +67,42 @@ def follow_link(request, code):
 
 
 def link_list(request):
-    paginator = Paginator(Link.objects.all(), LINKS_PER_PAGE)
+    search_form = LinkSearchForm(request.GET)
+    if search_form.is_valid():
+        query = search_form.cleaned_data['q']
+        sort = search_form.cleaned_data['sort'] or DEFAULT_SORT
+    else:
+        query, sort = '', DEFAULT_SORT
+
+    links = Link.objects.order_by(sort, 'pk')
+    if query:
+        links = links.filter(Q(original_link__icontains=query) | Q(short_code__icontains=query))
+
+    paginator = Paginator(links, LINKS_PER_PAGE)
     page_obj = paginator.get_page(request.GET.get('page'))
     add_short_urls(request, page_obj)
-    return render(request, 'shortener/link_list.html', {'page_obj': page_obj})
+
+    context = {
+        'page_obj': page_obj,
+        'search_form': search_form,
+        'query': query,
+        'sort': sort,
+        'columns': build_sort_columns(request, sort),
+    }
+    return render(request, 'shortener/link_list.html', context)
+
+
+def build_sort_columns(request, current_sort):
+    columns = []
+    for field, label in SORT_COLUMNS:
+        if current_sort == field:
+            direction, next_sort = 'asc', '-' + field
+        elif current_sort == '-' + field:
+            direction, next_sort = 'desc', field
+        else:
+            direction, next_sort = None, field
+        params = request.GET.copy()
+        params.pop('page', None)
+        params['sort'] = next_sort
+        columns.append({'label': label, 'direction': direction, 'url': '?' + params.urlencode()})
+    return columns

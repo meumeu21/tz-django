@@ -1,4 +1,4 @@
-{% load django_bootstrap5 %}
+{% load django_bootstrap5 static %}
 <!doctype html>
 <html lang="ru">
 <head>
@@ -6,13 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Сокращение ссылок{% endblock %}</title>
   {% bootstrap_css %}
+  <link rel="stylesheet" href="{% static 'shortener/styles.css' %}">
 </head>
 <body>
-  {% include 'shortener/navbar.html' %}
+  {% include 'shortener/includes/navbar.html' %}
   <main class="container py-4">
-    {% bootstrap_messages %}
     {% block content %}{% endblock %}
   </main>
+  {% include 'shortener/includes/toasts.html' %}
   {% bootstrap_javascript %}
+  <script src="{% static 'shortener/app.js' %}"></script>
 </body>
 </html>
