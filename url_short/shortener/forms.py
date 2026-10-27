@@ -4,6 +4,7 @@ from django import forms
 from django.conf import settings
 
 from .models import Link
+from .url_checks import check_url, normalize_url
 
 
 class LinkForm(forms.ModelForm):
@@ -18,10 +19,6 @@ class LinkForm(forms.ModelForm):
         }
 
     def clean_original_link(self):
-        url = self.cleaned_data['original_link']
-        hostname = (urlparse(url).hostname or '').lower()
-        for host in settings.ALLOWED_HOSTS:
-            host = host.lower().lstrip('.')
-            if hostname == host or hostname.endswith('.' + host):
-                raise forms.ValidationError('Нельзя сокращать ссылки на сам сервис')
+        url = normalize_url(self.cleaned_data['original_link'])
+        check_url(url)
         return url

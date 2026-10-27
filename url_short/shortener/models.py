@@ -3,6 +3,7 @@ import string
 
 from django.core.validators import URLValidator
 from django.db import models, IntegrityError, transaction
+from django.urls import reverse
 
 
 ALPHABET = string.ascii_letters + string.digits
@@ -29,9 +30,12 @@ class Link(models.Model):
         ordering = ['-created_at']
         verbose_name = 'ссылка'
         verbose_name_plural = 'ссылки'
-    
+
     def __str__(self):
         return self.original_link
+
+    def get_absolute_url(self):
+        return reverse('shortener:follow', args=[self.short_code])
 
     def save(self, *args, **kwargs):
         if self.short_code:

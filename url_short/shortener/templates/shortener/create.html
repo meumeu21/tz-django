@@ -1,9 +1,21 @@
 {% extends 'shortener/base.html' %}
 {% load django_bootstrap5 %}
 {% block content %}
-    <form method="POST">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        {% bootstrap_button button_type="submit" content="Сократить"%}
-    </form>
+  <form method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% bootstrap_button button_type="submit" content="Сократить"%}
+  </form>
+
+  {% if my_links %}
+    <h2 class="h5 mt-5">Предыдущие сокращенные ссылки</h2>
+    <ul class="list-group">
+      {% for link in my_links %}
+        <li class="list-group-item">
+          <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
+          <div class="small text-body-secondary text-truncate">{{ link.original_link }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 {% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'shortener/base.html' %}
+{% load django_bootstrap5 %}
+{% block title %}Все ссылки{% endblock %}
+{% block content %}
+  <h1 class="h3 mb-4">Все ссылки <span class="text-body-secondary fs-6">({{ page_obj.paginator.count }})</span></h1>
+
+  {% if page_obj %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Короткая ссылка</th>
+            <th scope="col">Исходная ссылка</th>
+            <th scope="col" class="text-nowrap">Создана</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for link in page_obj %}
+            <tr>
+              <td class="text-nowrap">
+                <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
+              </td>
+              <td>
+                <a href="{{ link.original_link }}" target="_blank" rel="noopener noreferrer"
+                   class="link-secondary" title="{{ link.original_link }}">{{ link.original_link|truncatechars:60 }}</a>
+              </td>
+              <td class="text-nowrap text-body-secondary">{{ link.created_at|date:"d.m.Y H:i" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+      {% bootstrap_pagination page_obj justify_content="center" %}
+    {% endif %}
+  {% else %}
+    <p class="text-body-secondary">Ссылок пока нет. <a href="{% url 'shortener:create' %}">Сократите первую</a></p>
+  {% endif %}
+{% endblock %}
