@@ -3,8 +3,7 @@
 {% block content %}
   <form method="POST">
     {% csrf_token %}
-    {% bootstrap_form form %}
-    {% bootstrap_button button_type="submit" content="Сократить" %}
+    {% bootstrap_field form.original_link addon_after='<button type="submit" class="btn btn-primary">Сократить</button>' addon_after_class=None %}
   </form>
 
   {% if latest_link %}

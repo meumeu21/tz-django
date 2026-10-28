@@ -32,13 +32,12 @@ class LinkForm(forms.ModelForm):
 
 class LinkSearchForm(forms.Form):
     q = forms.CharField(
+        label='Поиск',
         required=False,
         max_length=SEARCH_QUERY_MAX_LENGTH,
         widget=forms.TextInput(attrs={
             'type': 'search',
-            'class': 'form-control',
             'placeholder': 'Поиск по ссылке или коду',
-            'aria-label': 'Поиск',
         }),
     )
     sort = forms.ChoiceField(

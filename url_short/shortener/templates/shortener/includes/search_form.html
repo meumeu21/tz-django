@@ -1,8 +1,0 @@
-<form method="get" class="d-flex gap-2 mb-3" role="search">
-  {{ search_form.q }}
-  {{ search_form.sort }}
-  <button type="submit" class="btn btn-primary">Найти</button>
-  {% if query %}
-    <a href="?sort={{ sort|urlencode }}" class="btn btn-outline-secondary">Сбросить</a>
-  {% endif %}
-</form>

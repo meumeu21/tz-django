@@ -21,6 +21,7 @@ def create_link(request):
         form = LinkForm(request.POST)
         if is_rate_limited(request):
             messages.error(request, 'Слишком много запросов')
+            form = LinkForm(initial={'original_link': request.POST.get('original_link', '')})
             return render_create_page(request, form, HTTPStatus.TOO_MANY_REQUESTS)
         if form.is_valid():
             url = form.cleaned_data['original_link']
@@ -92,12 +93,12 @@ def link_list(request):
         'search_form': search_form,
         'query': query,
         'sort': sort,
-        'columns': build_sort_columns(request, sort),
+        'columns': build_sort_columns(sort),
     }
     return render(request, 'shortener/link_list.html', context)
 
 
-def build_sort_columns(request, current_sort):
+def build_sort_columns(current_sort):
     columns = []
     for field, label in SORT_COLUMNS:
         if current_sort == field:
@@ -106,8 +107,5 @@ def build_sort_columns(request, current_sort):
             direction, next_sort = 'desc', field
         else:
             direction, next_sort = None, field
-        params = request.GET.copy()
-        params.pop('page', None)
-        params['sort'] = next_sort
-        columns.append({'label': label, 'direction': direction, 'url': '?' + params.urlencode()})
+        columns.append({'label': label, 'direction': direction, 'next_sort': next_sort})
     return columns
