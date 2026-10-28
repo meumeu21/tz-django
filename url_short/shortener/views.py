@@ -18,11 +18,11 @@ MY_LINKS_SESSION_KEY = 'my_links'
 
 def create_link(request):
     if request.method == 'POST':
-        form = LinkForm(request.POST)
         if is_rate_limited(request):
             messages.error(request, 'Слишком много запросов')
             form = LinkForm(initial={'original_link': request.POST.get('original_link', '')})
             return render_create_page(request, form, HTTPStatus.TOO_MANY_REQUESTS)
+        form = LinkForm(request.POST)
         if form.is_valid():
             url = form.cleaned_data['original_link']
             link = Link.objects.filter(original_link=url).first()
