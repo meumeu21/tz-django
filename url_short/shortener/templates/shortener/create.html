@@ -7,13 +7,25 @@
     {% bootstrap_button button_type="submit" content="Сократить" %}
   </form>
 
-  {% if my_links %}
+  {% if latest_link %}
+    <div class="mt-4">
+      <label for="short-url" class="form-label">Короткая ссылка</label>
+      <div class="input-group">
+        <input type="text" id="short-url" class="form-control" value="{{ latest_link.short_url }}"
+               readonly data-select-on-focus>
+        <button type="button" class="btn btn-outline-primary" data-copy="{{ latest_link.short_url }}">Скопировать</button>
+      </div>
+      <div class="form-text text-truncate" title="{{ latest_link.original_link }}">{{ latest_link.original_link }}</div>
+    </div>
+  {% endif %}
+
+  {% if previous_links %}
     <h2 class="h5 mt-5">Предыдущие сокращенные ссылки</h2>
     <ul class="list-group">
-      {% for link in my_links %}
+      {% for link in previous_links %}
         <li class="list-group-item">
-          {% include 'shortener/includes/copy_field.html' %}
-          <div class="small text-body-secondary text-truncate mt-1" title="{{ link.original_link }}">{{ link.original_link }}</div>
+          <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
+          <div class="small text-body-secondary text-truncate" title="{{ link.original_link }}">{{ link.original_link }}</div>
         </li>
       {% endfor %}
     </ul>

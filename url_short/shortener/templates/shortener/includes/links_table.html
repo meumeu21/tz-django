@@ -7,7 +7,7 @@
           {% if column.direction == 'asc' %}aria-sort="ascending"{% elif column.direction == 'desc' %}aria-sort="descending"{% endif %}>
         <a href="{{ column.url }}" class="link-body-emphasis text-decoration-none">
           {{ column.label }}
-          {% if column.direction == 'asc' %}▲{% elif column.direction == 'desc' %}▼{% else %}<span class="text-body-tertiary">↕</span>{% endif %}
+          {% if column.direction == 'asc' %}↑{% elif column.direction == 'desc' %}↓{% else %}<span class="text-body-tertiary">↕</span>{% endif %}
         </a>
         </th>
       {% endfor %}
@@ -18,7 +18,6 @@
         <tr>
           <td class="text-nowrap">
             <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
-            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-copy="{{ link.short_url }}">Скопировать</button>
           </td>
           <td class="cell-truncate">
             <a href="{{ link.original_link }}" target="_blank" rel="noopener noreferrer"

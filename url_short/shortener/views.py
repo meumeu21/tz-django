@@ -12,7 +12,7 @@ from .ratelimit import is_rate_limited
 
 
 LINKS_PER_PAGE = 20
-MY_LINKS_LIMIT = 5
+PREVIOUS_LINKS_LIMIT = 5
 MY_LINKS_SESSION_KEY = 'my_links'
 
 
@@ -40,7 +40,7 @@ def remember_link(request, link):
     if link.short_code in codes:
         codes.remove(link.short_code)
     codes.insert(0, link.short_code)
-    request.session[MY_LINKS_SESSION_KEY] = codes[:MY_LINKS_LIMIT]
+    request.session[MY_LINKS_SESSION_KEY] = codes[:PREVIOUS_LINKS_LIMIT + 1]
 
 
 def get_my_links(request):
@@ -57,7 +57,12 @@ def add_short_urls(request, links):
 
 
 def render_create_page(request, form, status=HTTPStatus.OK):
-    context = {'form': form, 'my_links': get_my_links(request)}
+    my_links = get_my_links(request)
+    context = {
+        'form': form,
+        'latest_link': my_links[0] if my_links else None,
+        'previous_links': my_links[1:],
+    }
     return render(request, 'shortener/create.html', context, status=status)
 
 
