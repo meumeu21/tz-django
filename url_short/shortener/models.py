@@ -11,6 +11,7 @@ CODE_LENGTH = 6
 MAX_CODE_LENGTH = 10
 MAX_LINK_LENGTH = 2048
 ATTEMPTS_GENERATE_CODE = 10
+ALLOWED_SCHEMES = ['http', 'https']
 
 
 def generate_short_code(length=CODE_LENGTH):
@@ -21,7 +22,7 @@ class Link(models.Model):
     original_link = models.URLField(
         'исходная ссылка',
         max_length=MAX_LINK_LENGTH,
-        validators=[URLValidator(schemes=['http', 'https'])],
+        validators=[URLValidator(schemes=ALLOWED_SCHEMES)],
     )
     short_code = models.CharField('код', max_length=MAX_CODE_LENGTH, unique=True, editable=False)
     created_at = models.DateTimeField('создана', auto_now_add=True)

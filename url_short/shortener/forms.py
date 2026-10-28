@@ -10,6 +10,7 @@ SORT_COLUMNS = [
     ('created_at', 'Создана'),
 ]
 DEFAULT_SORT = '-created_at'
+SEARCH_QUERY_MAX_LENGTH = 200
 
 
 class LinkForm(forms.ModelForm):
@@ -32,7 +33,7 @@ class LinkForm(forms.ModelForm):
 class LinkSearchForm(forms.Form):
     q = forms.CharField(
         required=False,
-        max_length=200,
+        max_length=SEARCH_QUERY_MAX_LENGTH,
         widget=forms.TextInput(attrs={
             'type': 'search',
             'class': 'form-control',

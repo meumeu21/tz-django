@@ -4,7 +4,7 @@
   <form method="POST">
     {% csrf_token %}
     {% bootstrap_form form %}
-    {% bootstrap_button button_type="submit" content="Сократить"%}
+    {% bootstrap_button button_type="submit" content="Сократить" %}
   </form>
 
   {% if my_links %}
@@ -12,8 +12,8 @@
     <ul class="list-group">
       {% for link in my_links %}
         <li class="list-group-item">
-          <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
-          <div class="small text-body-secondary text-truncate">{{ link.original_link }}</div>
+          {% include 'shortener/includes/copy_field.html' %}
+          <div class="small text-body-secondary text-truncate mt-1" title="{{ link.original_link }}">{{ link.original_link }}</div>
         </li>
       {% endfor %}
     </ul>
