@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 def env_bool(name, default=False):
     return os.getenv(name, str(default)).lower() in ('true', '1')
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -48,15 +49,6 @@ if HTTPS:
 if BEHIND_PROXY:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-s^n(juox)juxb28@e6dg^*n_!47+5r9*67tly*g(30_qno60kk'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -66,6 +58,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_bootstrap5',
+    'images.apps.ImagesConfig',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +142,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MESSAGE_TAGS = {messages.ERROR: 'danger'}
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
