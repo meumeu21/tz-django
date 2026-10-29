@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.db.models import Q
 
 from http import HTTPStatus
 
@@ -80,9 +79,7 @@ def link_list(request):
     else:
         query, sort = '', DEFAULT_SORT
 
-    links = Link.objects.order_by(sort, 'pk')
-    if query:
-        links = links.filter(Q(original_link__icontains=query) | Q(short_code__icontains=query))
+    links = Link.objects.search(query).order_by(sort, 'pk')
 
     paginator = Paginator(links, LINKS_PER_PAGE)
     page_obj = paginator.get_page(request.GET.get('page'))

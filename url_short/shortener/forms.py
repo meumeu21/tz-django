@@ -1,11 +1,10 @@
 from django import forms
 
 from .models import Link
-from .url_checks import check_url, normalize_url
+from .url_checks import normalize_url
 
 
 SORT_COLUMNS = [
-    ('short_code', 'Короткая ссылка'),
     ('original_link', 'Исходная ссылка'),
     ('created_at', 'Создана'),
 ]
@@ -25,9 +24,7 @@ class LinkForm(forms.ModelForm):
         }
 
     def clean_original_link(self):
-        url = normalize_url(self.cleaned_data['original_link'])
-        check_url(url)
-        return url
+        return normalize_url(self.cleaned_data['original_link'])
 
 
 class LinkSearchForm(forms.Form):

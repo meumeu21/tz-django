@@ -2,14 +2,11 @@
 {% load django_bootstrap5 %}
 {% block title %}Все ссылки{% endblock %}
 {% block content %}
-  <h1 class="h3 mb-4">Все ссылки <span class="text-body-secondary fs-6">({{ page_obj.paginator.count }})</span></h1>
+  <h1 class="h3 mb-4">Все ссылки <span class="text-body-secondary">({{ page_obj.paginator.count }})</span></h1>
 
   <form method="get" class="d-flex gap-2 mb-3" role="search">
     {% bootstrap_field search_form.q show_label=False server_side_validation=False wrapper_class='flex-grow-1' addon_after='<button type="submit" class="btn btn-primary">Найти</button>' addon_after_class=None %}
     {{ search_form.sort }}
-    {% if query %}
-      <a href="?sort={{ sort|urlencode }}" class="btn btn-outline-secondary">Сбросить</a>
-    {% endif %}
   </form>
 
   {% if page_obj %}
