@@ -10,7 +10,6 @@ CACHE_KEY_PREFIX = 'ratelimit:create'
 
 def is_rate_limited(request):
     ip = request.META.get('REMOTE_ADDR')
-    limited = False
     for limit, period in LIMITS:
         key = f'{CACHE_KEY_PREFIX}:{ip}:{period}'
         cache.add(key, 0, period)
@@ -20,5 +19,5 @@ def is_rate_limited(request):
             cache.set(key, 1, period)
             count = 1
         if count > limit:
-            limited = True
-    return limited
+            return True
+    return False
