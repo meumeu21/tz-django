@@ -33,4 +33,4 @@ def check_url(url):
     except ValueError:
         return
     if not ip.is_global:
-        raise ValidationError('Ссылка ведёт на внутренний или локальный адрес')
+        raise ValidationError('Ссылка ведет на внутренний или локальный адрес')

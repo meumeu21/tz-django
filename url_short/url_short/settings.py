@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 from django.contrib.messages import constants as messages
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 
@@ -31,15 +32,21 @@ load_dotenv(BASE_DIR / '.env')
 
 # Environment variables
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise ImproperlyConfigured('Нужно сгенерировать SECRET_KEY и указать его в .env')
 DEBUG = env_bool('DEBUG')
 ALLOWED_HOSTS = [host.strip() for host in os.getenv('ALLOWED_HOSTS', '').split(',') if host.strip()]
+HTTPS = env_bool('HTTPS')
+BEHIND_PROXY = env_bool('BEHIND_PROXY')
 
-if env_bool('HTTPS'):
+if HTTPS:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 3600
+
+if BEHIND_PROXY:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
