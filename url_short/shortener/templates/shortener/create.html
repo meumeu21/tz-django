@@ -1,5 +1,5 @@
 {% extends 'shortener/base.html' %}
-{% load django_bootstrap5 %}
+{% load django_bootstrap5 shortener_tags %}
 {% block content %}
   <form method="POST">
     {% csrf_token %}
@@ -10,9 +10,8 @@
     <div class="mt-4">
       <label for="short-url" class="form-label">Короткая ссылка</label>
       <div class="input-group">
-        <input type="text" id="short-url" class="form-control" value="{{ latest_link.short_url }}"
-               readonly data-select-on-focus>
-        <button type="button" class="btn btn-outline-primary" data-copy="{{ latest_link.short_url }}">Скопировать</button>
+        <input type="text" id="short-url" class="form-control" value="{% short_url latest_link %}" readonly data-select-on-focus>
+        <button type="button" class="btn btn-outline-primary" data-copy="{% short_url latest_link %}">Скопировать</button>
       </div>
       <div class="form-text text-truncate" title="{{ latest_link.original_link }}">{{ latest_link.original_link }}</div>
     </div>
@@ -23,7 +22,7 @@
     <ul class="list-group">
       {% for link in previous_links %}
         <li class="list-group-item">
-          <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
+          {% include 'shortener/includes/short_link.html' %}
           <div class="small text-body-secondary text-truncate" title="{{ link.original_link }}">{{ link.original_link }}</div>
         </li>
       {% endfor %}

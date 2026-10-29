@@ -1,11 +1,10 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.core.paginator import Paginator
-from django.contrib import messages
-from django.http import HttpResponseRedirect
-
 from http import HTTPStatus
 
-from .forms import DEFAULT_SORT, SORT_COLUMNS, LinkForm, LinkSearchForm
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from django.core.paginator import Paginator
+
+from .forms import LinkForm, LinkSearchForm
 from .models import Link
 from .ratelimit import is_rate_limited
 
@@ -46,14 +45,7 @@ def remember_link(request, link):
 def get_my_links(request):
     codes = request.session.get(MY_LINKS_SESSION_KEY, [])
     links_by_code = Link.objects.in_bulk(codes, field_name='short_code')
-    my_links = [links_by_code[code] for code in codes if code in links_by_code]
-    add_short_urls(request, my_links)
-    return my_links
-
-
-def add_short_urls(request, links):
-    for link in links:
-        link.short_url = request.build_absolute_uri(link.get_absolute_url())
+    return [links_by_code[code] for code in codes if code in links_by_code]
 
 
 def render_create_page(request, form, status=HTTPStatus.OK):
@@ -68,41 +60,24 @@ def render_create_page(request, form, status=HTTPStatus.OK):
 
 def follow_link(request, code):
     link = get_object_or_404(Link, short_code=code)
-    return HttpResponseRedirect(link.original_link)
+    return redirect(link.original_link)
 
 
 def link_list(request):
     search_form = LinkSearchForm(request.GET)
-    if search_form.is_valid():
-        query = search_form.cleaned_data['q']
-        sort = search_form.cleaned_data['sort'] or DEFAULT_SORT
-    else:
-        query, sort = '', DEFAULT_SORT
+    search_form.is_valid()
+    query, sort = search_form.get_query(), search_form.get_sort()
 
     links = Link.objects.search(query).order_by(sort, 'pk')
 
     paginator = Paginator(links, LINKS_PER_PAGE)
     page_obj = paginator.get_page(request.GET.get('page'))
-    add_short_urls(request, page_obj)
 
     context = {
         'page_obj': page_obj,
         'search_form': search_form,
         'query': query,
         'sort': sort,
-        'columns': build_sort_columns(sort),
+        'columns': search_form.sort_columns(),
     }
     return render(request, 'shortener/link_list.html', context)
-
-
-def build_sort_columns(current_sort):
-    columns = []
-    for field, label in SORT_COLUMNS:
-        if current_sort == field:
-            direction, next_sort = 'asc', '-' + field
-        elif current_sort == '-' + field:
-            direction, next_sort = 'desc', field
-        else:
-            direction, next_sort = None, field
-        columns.append({'label': label, 'direction': direction, 'next_sort': next_sort})
-    return columns

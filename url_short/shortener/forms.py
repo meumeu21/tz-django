@@ -42,3 +42,22 @@ class LinkSearchForm(forms.Form):
         choices=[(prefix + field, '') for field, _ in SORT_COLUMNS for prefix in ('', '-')],
         widget=forms.HiddenInput,
     )
+
+    def get_query(self):
+        return self.cleaned_data.get('q', '')
+
+    def get_sort(self):
+        return self.cleaned_data.get('sort') or DEFAULT_SORT
+
+    def sort_columns(self):
+        current_sort = self.get_sort()
+        columns = []
+        for field, label in SORT_COLUMNS:
+            if current_sort == field:
+                direction, next_sort = 'asc', '-' + field
+            elif current_sort == '-' + field:
+                direction, next_sort = 'desc', field
+            else:
+                direction, next_sort = None, field
+            columns.append({'label': label, 'direction': direction, 'next_sort': next_sort})
+        return columns

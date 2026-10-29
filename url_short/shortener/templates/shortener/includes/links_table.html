@@ -18,7 +18,7 @@
       {% for link in page_obj %}
         <tr>
           <td class="text-nowrap">
-            <a href="{{ link.get_absolute_url }}" target="_blank" rel="noopener noreferrer">{{ link.short_url }}</a>
+            {% include 'shortener/includes/short_link.html' %}
           </td>
           <td class="cell-truncate">
             <a href="{{ link.original_link }}" target="_blank" rel="noopener noreferrer"
