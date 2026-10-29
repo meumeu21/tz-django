@@ -10,7 +10,7 @@ def normalize_url(url):
     return urlunsplit((
         parts.scheme.lower(),
         parts.netloc.lower(),
-        parts.path or '/',
+        parts.path.rstrip('/') or '/',
         parts.query,
         parts.fragment,
     ))

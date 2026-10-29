@@ -12,6 +12,10 @@ DEFAULT_SORT = '-created_at'
 SEARCH_QUERY_MAX_LENGTH = 200
 
 
+def https_formfield(field, **kwargs):
+    return field.formfield(assume_scheme='https', **kwargs)
+
+
 class LinkForm(forms.ModelForm):
     class Meta:
         model = Link
@@ -22,6 +26,7 @@ class LinkForm(forms.ModelForm):
         widgets = {
             'original_link': forms.URLInput(attrs={'placeholder': 'https://URL-вашей-ссылки.com/...'}),
         }
+        formfield_callback = https_formfield
 
     def clean_original_link(self):
         return normalize_url(self.cleaned_data['original_link'])

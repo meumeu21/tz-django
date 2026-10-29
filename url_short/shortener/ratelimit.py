@@ -21,7 +21,10 @@ def get_client_ip(request):
 
 
 def get_rate_limit_key(ip):
-    address = ipaddress.ip_address(ip)
+    try:
+        address = ipaddress.ip_address(ip)
+    except ValueError:
+        return 'unknown'
     if address.version == 6:
         network = ipaddress.ip_network(f'{address}/{IPV6_PREFIX_LENGTH}', strict=False)
         return str(network.network_address)
