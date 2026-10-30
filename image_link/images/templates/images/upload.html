@@ -1,0 +1,36 @@
+{% extends 'images/base.html' %}
+{% load django_bootstrap5 images_tags %}
+{% block content %}
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_field form.file %}
+    {% bootstrap_button 'Загрузить' button_type='submit' button_class='btn-primary' %}
+  </form>
+
+  {% if latest_image %}
+    <div class="mt-4">
+      <label for="image-url" class="form-label">Постоянная ссылка</label>
+      <div class="input-group">
+        <input type="text" id="image-url" class="form-control" value="{% absolute_url latest_image.get_absolute_url %}" readonly data-select-on-focus>
+        <button type="button" class="btn btn-outline-primary" data-copy="{% absolute_url latest_image.get_absolute_url %}">Скопировать</button>
+      </div>
+      <div class="form-text text-truncate" title="{{ latest_image.original_name }}">{{ latest_image.original_name }}</div>
+      <img src="{{ latest_image.get_file_url }}" alt="{{ latest_image.original_name }}" class="img-thumbnail mt-3 image-preview">
+    </div>
+  {% endif %}
+
+  {% if previous_images %}
+    <h2 class="h5 mt-5">Предыдущие загруженные картинки</h2>
+    <ul class="list-group">
+      {% for image in previous_images %}
+        <li class="list-group-item d-flex align-items-center gap-3">
+          <img src="{{ image.get_file_url }}" alt="{{ image.original_name }}" width="64" height="64" class="rounded object-fit-cover flex-shrink-0">
+          <div class="text-truncate">
+            <a href="{% absolute_url image.get_absolute_url %}" target="_blank" rel="noopener noreferrer">{% absolute_url image.get_absolute_url %}</a>
+            <div class="small text-body-secondary text-truncate" title="{{ image.original_name }}">{{ image.original_name }}</div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}
